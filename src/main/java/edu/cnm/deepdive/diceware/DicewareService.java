@@ -2,12 +2,23 @@ package edu.cnm.deepdive.diceware;
 
 import edu.cnm.deepdive.security.Diceware;
 import java.security.NoSuchAlgorithmException;
+import javax.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class DicewareService implements PassphraseService {
 
-  private Diceware diceware = new Diceware();
+  @Autowired
+  private RngProvider provider;
+
+  private Diceware diceware;
+
+  @PostConstruct
+  private void init() {
+    diceware = new Diceware();
+    diceware.setRng(provider.getRng());
+  }
 
   @Override
   public String generate(int length, String delimiter, boolean duplicatesAllowed)
